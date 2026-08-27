@@ -6521,7 +6521,7 @@ function renderDashboard() {
         const dateStr = ev.dateStart ? new Date(ev.dateStart + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
         const typeTag = ev.type === 'tournament' ? 'Tournament' : 'League';
         const showActual = c.actual.revenue > 0 || c.actual.expenses > 0;
-        const entityBadge = ev.entityId ? entityBadgeHTML(ev.entityId, 'small') : '';
+        const entityBadge = (ev.businessId||state.activeBusiness) ? entityBadgeHTML(ev.businessId||state.activeBusiness, 'small') : '';
         return `
           <div class="event-row" onclick="openEvent('${ev.id}')">
             <div>
@@ -6607,7 +6607,7 @@ function renderEventsList() {
     const typeTag = ev.type === 'tournament' ? 'Tournament' : 'League';
     const archived = (ev.status || 'active') === 'archived';
     const showActual = c.actual.revenue > 0 || c.actual.expenses > 0;
-    const entityBadge = ev.entityId ? entityBadgeHTML(ev.entityId, 'small') : '';
+    const entityBadge = (ev.businessId||state.activeBusiness) ? entityBadgeHTML(ev.businessId||state.activeBusiness, 'small') : '';
     return `
       <div class="event-row" onclick="openEvent('${ev.id}')">
         <div>
@@ -6749,7 +6749,7 @@ function renderEventDetail() {
   }
 
   document.getElementById('ed-title').innerHTML = esc(ev.name || 'Untitled event');
-  const entityBadge = ev.entityId ? ' ' + entityBadgeHTML(ev.entityId, 'small') : '';
+  const entityBadge = (ev.businessId||state.activeBusiness) ? ' ' + entityBadgeHTML(ev.businessId||state.activeBusiness, 'small') : '';
   document.getElementById('ed-subtitle').innerHTML =
     (ev.type === 'tournament' ? 'Tournament' : 'League') +
     (ev.dateStart ? ' · ' + new Date(ev.dateStart + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '') +
@@ -7017,7 +7017,7 @@ function bindMetaField(id, key, transform) {
     if (id === 'ed-type' || id === 'ed-entity' || id === 'ed-date-start') {
       const ev2 = currentEvent();
       if (ev2) {
-        const badge = ev2.entityId ? ' ' + entityBadgeHTML(ev2.entityId, 'small') : '';
+        const badge = (ev2.businessId||state.activeBusiness) ? ' ' + entityBadgeHTML(ev2.businessId||state.activeBusiness, 'small') : '';
         document.getElementById('ed-subtitle').innerHTML =
           (ev2.type === 'tournament' ? 'Tournament' : 'League') +
           (ev2.dateStart ? ' · ' + new Date(ev2.dateStart + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '') +
@@ -11256,6 +11256,13 @@ if (!state.shared.categoryRules)      state.shared.categoryRules      = [];
 if (!state.shared.settings)           state.shared.settings           = defaultShared().settings;
 if (typeof state.poSequence !== 'number') state.poSequence = 0;
 
+// Always ensure every event carries its true owning businessId (badge integrity)
+(state.businesses || []).forEach(b => {
+  const data = state.businessData?.[b.id];
+  if (!data) return;
+  (data.events || []).forEach(ev => { if (ev.businessId !== b.id) ev.businessId = b.id; });
+});
+
 /* One-time normalization: convert any negative expense rates/qtys to positive
    magnitudes so the P&L math is consistent (gross = revenue - expenses). This
    handles data imported from spreadsheets where expenses were stored as "$(20.00)". */
@@ -11293,6 +11300,7 @@ if (!state._booksModelMigrated) {
     });
     // 2. Categorize event lines (best-effort; blank stays blank -> estimate fallback)
     (data.events || []).forEach(ev => {
+      ev.businessId = b.id;   // stamp true owning business so badge can't mismatch
       const tag = (line, isRevenue) => {
         if (line.category) return;
         const pseudo = { description: line.label || line.name || '', amount: isRevenue ? 1 : -1 };
