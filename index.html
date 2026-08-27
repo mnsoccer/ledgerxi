@@ -6230,20 +6230,25 @@ function sharedTemplates() { return (state.shared || defaultShared()).templates 
 function sharedVendors()   { return (state.shared || defaultShared()).vendors   || []; }
 
 function switchBusiness(bizId) {
+  const dd = document.getElementById('biz-dropdown');
   if (state.activeBusiness === bizId) {   // already active — just close the menu
-    const dd0 = document.getElementById('biz-dropdown');
-    if (dd0) dd0.style.display = 'none';
+    if (dd) dd.style.display = 'none';
     return;
   }
   state.activeBusiness = bizId;
   save();
   updateBusinessToggle();
-  // Keep the dropdown's checkmark in sync, then close it
   if (typeof renderBizDropdown === 'function') renderBizDropdown();
-  const dd = document.getElementById('biz-dropdown');
   if (dd) dd.style.display = 'none';
-  // Re-render whatever view is currently showing (not always dashboard)
-  showView(currentView && currentView !== 'master' ? currentView : 'dashboard');
+  // Force a clean re-render of the current view from the new active business.
+  // Determine the view from the active nav button if currentView is stale.
+  let v = currentView;
+  const activeNav = document.querySelector('.nav-btn.active');
+  if (activeNav && activeNav.dataset.view) v = activeNav.dataset.view;
+  if (!v || v === 'master') v = 'dashboard';
+  // showView in a microtask so DOM/state settle first, guaranteeing the render runs
+  currentView = null;               // clear so showView always re-dispatches
+  requestAnimationFrame(() => showView(v));
 }
 
 function updateBusinessToggle() {
