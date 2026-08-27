@@ -6,7 +6,7 @@
 <title>Ledger XI — Club Operations Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Familjen+Grotesk:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Familjen+Grotesk:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <!-- PDF text extraction (lazy-used for invoice parsing) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
@@ -52,7 +52,7 @@
   /* Typography */
   --font-display: 'Fraunces', Georgia, serif;
   --font-sans: 'Familjen Grotesk', system-ui, sans-serif;
-  --font-mono: 'Familjen Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   /* Rhythm */
   --r-1: 4px; --r-2: 8px; --r-3: 12px; --r-4: 16px;
@@ -3652,6 +3652,19 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
 .pnl-pos { color:var(--revenue); }
 .pnl-neg { color:var(--expense); }
 .pnl-flag { background:rgba(234,179,8,0.08); border:1px solid rgba(234,179,8,0.3); border-radius:var(--radius-lg); padding:12px 16px; margin:16px 0; font-size:13px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.pnl-book { border:1px solid var(--line); border-radius:var(--radius); margin-bottom:6px; background:var(--surface); overflow:hidden; }
+.pnl-book:hover { border-color:var(--line-strong); }
+.pnl-book-head { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; }
+.pnl-book-name { font-weight:600; font-size:14px; }
+.pnl-caret { color:var(--ink-3); font-size:11px; display:inline-block; width:12px; }
+.pnl-book-net { font-family:var(--font-mono); font-variant-numeric:tabular-nums; font-weight:600; }
+.pnl-book-meta { padding:0 16px 10px 34px; font-size:11px; color:var(--ink-3); font-family:var(--font-mono); }
+.pnl-book-detail { border-top:1px solid var(--line); padding:8px 16px 12px 34px; background:var(--surface-2); }
+.pnl-detail-line { display:grid; grid-template-columns:1fr auto; gap:12px; padding:5px 0; font-size:12.5px; align-items:center; }
+.pnl-detail-line .pnl-amt { font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+.pnl-badge { font-size:9px; font-family:var(--font-mono); letter-spacing:0.06em; text-transform:uppercase; padding:1px 6px; border-radius:6px; margin-left:6px; vertical-align:middle; }
+.pnl-badge-recon { background:rgba(16,185,129,0.14); color:#047857; }
+.pnl-badge-est { background:rgba(234,179,8,0.14); color:#92400E; }
 .pnl-kpi-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
 .exec-report-header {
   background:var(--ink); color:var(--canvas); border-radius:var(--radius-lg);
@@ -5935,7 +5948,7 @@ function save() {
    ============================================================ */
 
 // ⬇️ PASTE YOUR OAUTH CLIENT ID HERE (from Google Cloud Console). Leave '' to disable Drive sync.
-const DRIVE_CLIENT_ID = '260376179274-0blppu2gdgfrrh3sbmp565154bo6sijp.apps.googleusercontent.com';
+const DRIVE_CLIENT_ID = '';
 
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const DRIVE_FILENAME = 'LedgerXI-data.json';
@@ -9411,7 +9424,7 @@ function renderPnlView() {
   const body = document.getElementById('pnl-body');
   if (!body) return;
 
-  // ---- Populate year filter from events + transactions ----
+  // ---- Year filter ----
   const yearSel = document.getElementById('pnl-year');
   const fromEl = document.getElementById('pnl-from');
   const toEl = document.getElementById('pnl-to');
@@ -9424,110 +9437,171 @@ function renderPnlView() {
     Array.from(years).filter(Boolean).sort((a, b) => b - a).map(y => '<option value="' + y + '">' + y + '</option>').join('');
   yearSel.value = prevYear || String(new Date().getFullYear());
 
-  // ---- Resolve active date window ----
-  // Explicit from/to override the year selector. Year selector sets an implied window.
+  // ---- Date window ----
   let from = fromEl.value || '';
   let to = toEl.value || '';
   let scopeLabel;
-  if (from || to) {
-    scopeLabel = (from || '…') + ' → ' + (to || '…');
-  } else if (yearSel.value !== 'all') {
-    from = yearSel.value + '-01-01';
-    to = yearSel.value + '-12-31';
-    scopeLabel = 'Fiscal year ' + yearSel.value;
-  } else {
-    scopeLabel = 'All time';
-  }
+  if (from || to) scopeLabel = (from || '…') + ' → ' + (to || '…');
+  else if (yearSel.value !== 'all') { from = yearSel.value + '-01-01'; to = yearSel.value + '-12-31'; scopeLabel = 'Fiscal year ' + yearSel.value; }
+  else scopeLabel = 'All time';
 
-  // ---- 1. EVENT ECONOMICS (actuals, fall back to budget if no actuals) ----
-  let eventRevenue = 0, eventCosts = 0;
-  const eventsInScope = (biz().events || []).filter(ev => (ev.status || 'active') === 'active');
-  eventsInScope.forEach(ev => {
-    // date filter on event start
-    if ((from || to) && !pnlDateInRange(ev.dateStart || '', from, to)) return;
-    const c = computeEvent(ev);
-    const hasActual = c.actual.revenue > 0 || c.actual.expenses > 0;
-    const p = hasActual ? c.actual : c.budget;
-    eventRevenue += p.revenue;
-    eventCosts += p.expenses;
+  const inRange = (iso) => !(from || to) || pnlDateInRange(iso, from, to);
+
+  // ---- Index transactions by book (event id or 'corporate'), in date range ----
+  const txnsByBook = {};   // book -> [txns]
+  let uncatIn = 0, uncatOut = 0, excludedNet = 0;
+  (biz().reconTransactions || []).forEach(t => {
+    if (!inRange(t.date)) return;
+    const book = t.book || (t.matchedEventId ? t.matchedEventId : 'corporate');
+    (txnsByBook[book] = txnsByBook[book] || []).push(t);
   });
 
-  // ---- 2. RECONCILIATION OVERHEAD LAYER ----
-  // Only unmatched (not tied to an event) transactions with a category.
-  const txns = (biz().reconTransactions || []).filter(t => {
-    if (t.matchedEventId) return false;               // avoid double count with events
-    if ((from || to) && !pnlDateInRange(t.date, from, to)) return false;
+  // ---- Category-level reconciliation for one event ----
+  // For each COA category: if any tagged transaction exists for that category,
+  // the transactions ARE the actual (bank/CC wins); otherwise the manual line
+  // stands in as estimate. Returns { catActual: {catId: signedAmount}, reconciledCats:Set,
+  //   estimateCats:Set, uncategorizedEstimate: number }
+  function reconcileEvent(ev) {
+    const evTxns = (txnsByBook[ev.id] || []);
+    // 1. Bank/CC actuals per category (signed: revenue +, expense -)
+    const txnByCat = {};
+    evTxns.forEach(t => {
+      const c = t.category || '';
+      if (!c) return;                       // uncategorized txn — can't reconcile a category
+      if (coaType(c) === 'exclude') { excludedNet += t.amount; return; }
+      txnByCat[c] = (txnByCat[c] || 0) + t.amount;
+    });
+    // 2. Manual line estimates per category
+    const estByCat = {};
+    (ev.revenueLines || []).forEach(l => {
+      const amt = (+l.actualRate || +l.budgetRate || 0) * (+l.actualQty || +l.budgetQty || 0);
+      const c = l.category || '__uncat_rev';
+      estByCat[c] = (estByCat[c] || 0) + Math.abs(amt);       // revenue positive
+    });
+    (ev.expenseLines || []).forEach(l => {
+      const amt = (+l.actualRate || +l.budgetRate || 0) * (+l.actualQty || +l.budgetQty || 0);
+      const c = l.category || '__uncat_exp';
+      estByCat[c] = (estByCat[c] || 0) - Math.abs(amt);       // expense negative
+    });
+    // 3. Merge: transaction wins per category, else estimate
+    const catActual = {};
+    const reconciledCats = new Set();
+    const estimateCats = new Set();
+    const allCats = new Set([...Object.keys(txnByCat), ...Object.keys(estByCat)]);
+    allCats.forEach(c => {
+      if (txnByCat[c] !== undefined) { catActual[c] = txnByCat[c]; reconciledCats.add(c); }
+      else { catActual[c] = estByCat[c]; estimateCats.add(c); }
+    });
+    return { catActual, reconciledCats, estimateCats, evTxns };
+  }
+
+  // ---- Build per-event books ----
+  const eventsInScope = (biz().events || []).filter(ev => {
+    if ((ev.status || 'active') === 'archived') return false;   // active events only in P&L
+    if ((from || to) && !inRange(ev.dateStart || '')) return false;
     return true;
   });
 
-  // Bucket by category id
-  const catTotals = {};   // categoryId -> summed amount (signed)
-  let uncategorizedIn = 0, uncategorizedOut = 0;
-  let excludedNet = 0;
-  txns.forEach(t => {
-    const cat = t.category || '';
-    if (!cat) {
-      if (t.amount >= 0) uncategorizedIn += t.amount; else uncategorizedOut += t.amount;
-      return;
-    }
-    const type = coaType(cat);
-    if (type === 'exclude') { excludedNet += t.amount; return; }
-    catTotals[cat] = (catTotals[cat] || 0) + t.amount;
+  const books = [];   // { name, id, revenue, cogs, opex, net, reconciledCats, estimateCats, catActual }
+  eventsInScope.forEach(ev => {
+    const r = reconcileEvent(ev);
+    let rev = 0, cogs = 0, opex = 0;
+    Object.keys(r.catActual).forEach(c => {
+      const amt = r.catActual[c];
+      const type = c.startsWith('__uncat') ? (c === '__uncat_rev' ? 'revenue' : 'opex') : coaType(c);
+      if (type === 'revenue') rev += amt;
+      else if (type === 'cogs') cogs += Math.abs(amt);
+      else if (type === 'opex') opex += Math.abs(amt);
+      // exclude handled already
+    });
+    books.push({ id: ev.id, name: ev.name, revenue: rev, cogs, opex, net: rev - cogs - opex,
+                 reconciledCats: r.reconciledCats, estimateCats: r.estimateCats, catActual: r.catActual });
   });
 
-  // ---- Assemble P&L sections ----
-  // Revenue: event revenue + any revenue-type categorized txns
-  const revCatLines = [];
-  let txnRevenue = 0;
-  COA.filter(c => c.type === 'revenue').forEach(c => {
-    if (catTotals[c.id]) { revCatLines.push({ label: c.label, amt: catTotals[c.id] }); txnRevenue += catTotals[c.id]; }
+  // ---- Corporate book: transactions tagged 'corporate', by category ----
+  const corpCat = {};   // catId -> signed
+  (txnsByBook['corporate'] || []).forEach(t => {
+    const c = t.category || '';
+    if (!c) { if (t.amount >= 0) uncatIn += t.amount; else uncatOut += t.amount; return; }
+    if (coaType(c) === 'exclude') { excludedNet += t.amount; return; }
+    corpCat[c] = (corpCat[c] || 0) + t.amount;
   });
-  const totalRevenue = eventRevenue + txnRevenue;
+  // Also fold any uncategorized event txns into the uncategorized flag
+  Object.keys(txnsByBook).forEach(book => {
+    if (book === 'corporate') return;
+    (txnsByBook[book]).forEach(t => { if (!t.category) { if (t.amount >= 0) uncatIn += t.amount; else uncatOut += t.amount; } });
+  });
 
-  // COGS: event costs (single roll-up line) + cogs-type categorized txns (stored negative)
-  const cogsCatLines = [];
-  let txnCogs = 0;
-  COA.filter(c => c.type === 'cogs').forEach(c => {
-    if (catTotals[c.id]) { const mag = Math.abs(catTotals[c.id]); cogsCatLines.push({ label: c.label, amt: mag }); txnCogs += mag; }
+  let corpRev = 0, corpCogs = 0, corpOpex = 0;
+  Object.keys(corpCat).forEach(c => {
+    const type = coaType(c), amt = corpCat[c];
+    if (type === 'revenue') corpRev += amt;
+    else if (type === 'cogs') corpCogs += Math.abs(amt);
+    else if (type === 'opex') corpOpex += Math.abs(amt);
   });
-  const totalCogs = eventCosts + txnCogs;
+  const corpNet = corpRev - corpCogs - corpOpex;
+
+  // ---- Business totals ----
+  const totalRevenue = corpRev + books.reduce((s, b) => s + b.revenue, 0);
+  const totalCogs = corpCogs + books.reduce((s, b) => s + b.cogs, 0);
+  const totalOpex = corpOpex + books.reduce((s, b) => s + b.opex, 0);
   const grossProfit = totalRevenue - totalCogs;
-
-  // Opex: opex-type categorized txns (stored negative -> magnitude)
-  const opexCatLines = [];
-  let totalOpex = 0;
-  COA.filter(c => c.type === 'opex').forEach(c => {
-    if (catTotals[c.id]) { const mag = Math.abs(catTotals[c.id]); opexCatLines.push({ label: c.label, amt: mag }); totalOpex += mag; }
-  });
   const netProfit = grossProfit - totalOpex;
   const netMargin = totalRevenue > 0 ? (netProfit / totalRevenue * 100).toFixed(1) + '%' : '—';
 
   // ---- Render ----
-  const line = (label, amt, cls) => '<div class="pnl-line"><span class="pnl-line-label">' + esc(label) + '</span><span class="pnl-amt ' + (cls || '') + '">' + fmt(amt) + '</span></div>';
-  const subtotal = (label, amt) => '<div class="pnl-subtotal"><span>' + esc(label) + '</span><span class="pnl-amt">' + fmt(amt) + '</span></div>';
+  const money = (n, cls) => '<span class="pnl-amt ' + (cls || '') + '">' + fmt(n) + '</span>';
+  const bookRow = (name, rev, cogs, opex, net, meta, id) => {
+    const netCls = net >= 0 ? 'pnl-pos' : 'pnl-neg';
+    return '<div class="pnl-book" ' + (id ? 'onclick="togglePnlBook(\'' + id + '\')" style="cursor:pointer;"' : '') + '>' +
+      '<div class="pnl-book-head">' +
+        '<span class="pnl-book-name">' + (id ? '<span class="pnl-caret" id="caret-' + id + '">▸</span> ' : '') + esc(name) + '</span>' +
+        '<span class="pnl-book-net ' + netCls + '">' + fmt(net) + '</span>' +
+      '</div>' +
+      (meta ? '<div class="pnl-book-meta">' + meta + '</div>' : '') +
+    '</div>';
+  };
 
-  let revenueLinesHtml = '';
-  if (eventRevenue) revenueLinesHtml += line('Event Revenue (all events)', eventRevenue);
-  revCatLines.forEach(l => revenueLinesHtml += line(l.label, l.amt));
-  if (!revenueLinesHtml) revenueLinesHtml = '<div class="pnl-line"><span class="pnl-line-label" style="color:var(--ink-3);">No revenue in range</span><span class="pnl-amt">—</span></div>';
+  // Per-event drill-down (hidden by default)
+  const bookDetail = (b) => {
+    const rows = [];
+    // group catActual by type for display
+    const order = ['revenue', 'cogs', 'opex'];
+    order.forEach(type => {
+      Object.keys(b.catActual).forEach(c => {
+        const t = c.startsWith('__uncat') ? (c === '__uncat_rev' ? 'revenue' : 'opex') : coaType(c);
+        if (t !== type) return;
+        const amt = b.catActual[c];
+        const label = c.startsWith('__uncat') ? '(uncategorized)' : coaLabel(c);
+        const isRecon = b.reconciledCats.has(c);
+        const badge = isRecon
+          ? '<span class="pnl-badge pnl-badge-recon">actual</span>'
+          : '<span class="pnl-badge pnl-badge-est">estimate</span>';
+        rows.push('<div class="pnl-detail-line"><span>' + esc(label) + ' ' + badge + '</span>' +
+                  money(type === 'revenue' ? amt : -Math.abs(amt), type === 'revenue' ? '' : 'pnl-neg') + '</div>');
+      });
+    });
+    return '<div class="pnl-book-detail" id="detail-' + b.id + '" style="display:none;">' + (rows.join('') || '<div class="pnl-detail-line" style="color:var(--ink-3);">No categorized activity yet</div>') + '</div>';
+  };
 
-  let cogsLinesHtml = '';
-  if (eventCosts) cogsLinesHtml += line('Event Costs (all events)', -eventCosts, 'pnl-neg');
-  cogsCatLines.forEach(l => cogsLinesHtml += line(l.label, -l.amt, 'pnl-neg'));
-  if (!cogsLinesHtml) cogsLinesHtml = '<div class="pnl-line"><span class="pnl-line-label" style="color:var(--ink-3);">No cost of services in range</span><span class="pnl-amt">—</span></div>';
+  let booksHtml = '';
+  // Corporate book first
+  booksHtml += bookRow('Corporate (overhead)', corpRev, corpCogs, corpOpex, corpNet,
+    (corpRev ? 'Revenue ' + fmt(corpRev) + ' · ' : '') + 'Opex ' + fmt(corpOpex), null);
+  // Then each event
+  books.forEach(b => {
+    const reconCount = b.reconciledCats.size, estCount = b.estimateCats.size;
+    const meta = reconCount + ' actual · ' + estCount + ' estimate' + (estCount > 0 ? ' (unreconciled)' : '');
+    booksHtml += bookRow(b.name, b.revenue, b.cogs, b.opex, b.net, meta, b.id) + bookDetail(b);
+  });
 
-  let opexLinesHtml = '';
-  opexCatLines.forEach(l => opexLinesHtml += line(l.label, -l.amt, 'pnl-neg'));
-  if (!opexLinesHtml) opexLinesHtml = '<div class="pnl-line"><span class="pnl-line-label" style="color:var(--ink-3);">No overhead categorized in range</span><span class="pnl-amt">—</span></div>';
-
-  // Flags for data-quality
-  const uncatTotal = uncategorizedIn + uncategorizedOut;
+  // Data-quality flags
   let flagsHtml = '';
-  if (uncategorizedIn !== 0 || uncategorizedOut !== 0) {
-    flagsHtml += '<div class="pnl-flag"><div>⚠️ <strong>' + fmt(uncategorizedIn) + '</strong> in and <strong>' + fmt(uncategorizedOut) + '</strong> out of unmatched transactions are <strong>uncategorized</strong> — not included in this P&L.</div><button class="btn btn-sm btn-primary" onclick="showView(\'reconciliation\')">Categorize now</button></div>';
+  if (uncatIn !== 0 || uncatOut !== 0) {
+    flagsHtml += '<div class="pnl-flag"><div>⚠️ <strong>' + fmt(uncatIn) + '</strong> in / <strong>' + fmt(uncatOut) + '</strong> out is <strong>uncategorized</strong> — not in this P&L.</div><button class="btn btn-sm btn-primary" onclick="showView(\'reconciliation\')">Categorize</button></div>';
   }
   if (excludedNet !== 0) {
-    flagsHtml += '<div class="pnl-flag" style="background:rgba(107,114,128,0.06);border-color:rgba(107,114,128,0.25);"><div>ℹ️ <strong>' + fmt(excludedNet) + '</strong> net in transfers / deposits / taxes is correctly <strong>excluded</strong> from the P&L.</div></div>';
+    flagsHtml += '<div class="pnl-flag" style="background:rgba(107,114,128,0.06);border-color:rgba(107,114,128,0.25);"><div>ℹ️ <strong>' + fmt(excludedNet) + '</strong> net in transfers / deposits / taxes correctly <strong>excluded</strong>.</div></div>';
   }
 
   body.innerHTML =
@@ -9535,20 +9609,27 @@ function renderPnlView() {
       '<div class="eq-kpi"><div class="eq-kpi-label">Total revenue</div><div class="eq-kpi-value pos">' + fmt(totalRevenue) + '</div></div>' +
       '<div class="eq-kpi"><div class="eq-kpi-label">Gross profit</div><div class="eq-kpi-value">' + fmt(grossProfit) + '</div></div>' +
       '<div class="eq-kpi"><div class="eq-kpi-label">Net profit</div><div class="eq-kpi-value" style="color:' + (netProfit >= 0 ? 'var(--revenue)' : 'var(--expense)') + ';">' + fmt(netProfit) + '</div></div>' +
-      '<div class="eq-kpi"><div class="eq-kpi-label">Net margin</div><div class="eq-kpi-value">' + netMargin + '</div><div class="eq-kpi-sub">' + eventsInScope.length + ' events</div></div>' +
+      '<div class="eq-kpi"><div class="eq-kpi-label">Net margin</div><div class="eq-kpi-value">' + netMargin + '</div><div class="eq-kpi-sub">' + books.length + ' events + corp</div></div>' +
     '</div>' +
     '<div class="pnl-statement">' +
-      '<div class="pnl-scope-note">' + esc(state.shared.settings.businessName || 'Ledger XI') + ' · ' + esc(activeBiz()?.shortName || activeBiz()?.name || '') + ' · ' + esc(scopeLabel) + '</div>' +
+      '<div class="pnl-scope-note">' + esc(state.shared.settings.businessName || 'Ledger XI') + ' · ' + esc(activeBiz()?.name || '') + ' · ' + esc(scopeLabel) + '</div>' +
       flagsHtml +
-      '<div class="pnl-section"><div class="pnl-section-head"><span>Revenue</span></div>' + revenueLinesHtml + '</div>' +
-      subtotal('Total Revenue', totalRevenue) +
-      '<div class="pnl-section" style="margin-top:18px;"><div class="pnl-section-head"><span>Cost of Services</span></div>' + cogsLinesHtml + '</div>' +
-      subtotal('Total Cost of Services', -totalCogs) +
-      subtotal('Gross Profit', grossProfit) +
-      '<div class="pnl-section" style="margin-top:18px;"><div class="pnl-section-head"><span>Operating Expenses</span></div>' + opexLinesHtml + '</div>' +
-      subtotal('Total Operating Expenses', -totalOpex) +
-      '<div class="pnl-net"><span>Net Profit</span><span class="pnl-amt">' + fmt(netProfit) + '</span></div>' +
+      '<div class="pnl-section-head" style="margin-top:8px;"><span>Books</span><span style="font-size:10px;">Net</span></div>' +
+      booksHtml +
+      '<div class="pnl-net" style="margin-top:14px;"><span>Business Net Profit</span><span class="pnl-amt">' + fmt(netProfit) + '</span></div>' +
+      '<div style="display:grid;grid-template-columns:1fr auto;gap:12px;padding:10px 16px 0;font-size:12px;color:var(--ink-3);">' +
+        '<span>Total revenue ' + fmt(totalRevenue) + ' · Cost of services ' + fmt(-totalCogs) + ' · Operating expenses ' + fmt(-totalOpex) + '</span><span></span>' +
+      '</div>' +
     '</div>';
+}
+
+function togglePnlBook(id) {
+  const d = document.getElementById('detail-' + id);
+  const c = document.getElementById('caret-' + id);
+  if (!d) return;
+  const open = d.style.display !== 'none';
+  d.style.display = open ? 'none' : 'block';
+  if (c) c.textContent = open ? '▸' : '▾';
 }
 
 /* P&L filter wiring */
@@ -11192,6 +11273,37 @@ if (!state._expenseSignNormalized) {
     });
   });
   state._expenseSignNormalized = true;
+  save();
+}
+
+/* One-time migration for the two-level books model (Corporate + Events):
+   - Every reconciliation transaction gets a `book` tag: 'corporate' or an event id.
+     Existing matchedEventId maps to book=<eventId>; everything else -> 'corporate'.
+   - Every event revenue/expense line gets a `category` (COA id) via the auto-categorizer,
+     so category-level reconciliation (transactions replace estimates per category) works. */
+if (!state._booksModelMigrated) {
+  (state.businesses || []).forEach(b => {
+    const data = state.businessData?.[b.id];
+    if (!data) return;
+    // 1. Tag transactions
+    (data.reconTransactions || []).forEach(t => {
+      if (t.book === undefined || t.book === null || t.book === '') {
+        t.book = t.matchedEventId ? t.matchedEventId : 'corporate';
+      }
+    });
+    // 2. Categorize event lines (best-effort; blank stays blank -> estimate fallback)
+    (data.events || []).forEach(ev => {
+      const tag = (line, isRevenue) => {
+        if (line.category) return;
+        const pseudo = { description: line.label || line.name || '', amount: isRevenue ? 1 : -1 };
+        const s = (typeof suggestCategory === 'function') ? suggestCategory(pseudo) : null;
+        if (s) line.category = s.category;
+      };
+      (ev.revenueLines || []).forEach(l => tag(l, true));
+      (ev.expenseLines || []).forEach(l => tag(l, false));
+    });
+  });
+  state._booksModelMigrated = true;
   save();
 }
 
@@ -15835,12 +15947,13 @@ function renderReconciliationView() {
     <div class="recon-row-head">
       <span>Date</span><span>Description</span><span>Category</span>
       <span style="text-align:right;">In</span><span style="text-align:right;">Out</span>
-      <span>Status</span><span>Matched to</span>
+      <span>Status</span><span>Book</span>
     </div>
     ${filtered.length===0?`<div class="eq-row" style="grid-template-columns:1fr;padding:20px;color:var(--ink-3);">No transactions match these filters.</div>`:
     filtered.map(t=>{
       const acct=acctById(t.accountId);
-      const matchedEvent=t.matchedEventId?biz().events.find(e=>e.id===t.matchedEventId):null;
+      const book=t.book||(t.matchedEventId?t.matchedEventId:'corporate');
+      const bookLabel = book==='corporate' ? 'Corporate' : ((biz().events||[]).find(e=>e.id===book)?.name || '—');
       return`<div class="recon-row" onclick="openReconTx('${t.id}')">
         <div style="font-family:var(--font-mono);font-size:12px;">${fmtDate(t.date)}</div>
         <div>
@@ -15851,7 +15964,7 @@ function renderReconciliationView() {
         <div class="${t.amount>0?'recon-amount-in':''}" style="text-align:right;">${t.amount>0?fmt(t.amount):'—'}</div>
         <div class="${t.amount<0?'recon-amount-out':''}" style="text-align:right;">${t.amount<0?fmt(t.amount):'—'}</div>
         <div><span class="recon-status ${t.matchStatus||'unmatched'}">${(t.matchStatus||'unmatched').charAt(0).toUpperCase()+(t.matchStatus||'unmatched').slice(1)}</span></div>
-        <div style="font-size:12px;color:var(--ink-2);">${matchedEvent?esc(matchedEvent.name):'—'}</div>
+        <div style="font-size:12px;color:${book==='corporate'?'var(--ink-3)':'var(--ink-2)'};">${esc(bookLabel)}</div>
       </div>`;
     }).join('')}
   `;
@@ -15863,8 +15976,10 @@ function openReconTx(txId) {
   const acct=acctById(tx.accountId);
   const statusOpts=['unmatched','matched','confirmed','disputed'].map(s=>
     `<option value="${s}" ${tx.matchStatus===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('');
-  const eventOpts='<option value="">— No match —</option>'+(biz().events||[]).map(e=>
-    `<option value="${e.id}" ${tx.matchedEventId===e.id?'selected':''}>${esc(e.name)}</option>`).join('');
+  const currentBook = tx.book || (tx.matchedEventId ? tx.matchedEventId : 'corporate');
+  const bookOpts='<option value="corporate" '+(currentBook==='corporate'?'selected':'')+'>Corporate (business overhead)</option>'+
+    (biz().events||[]).map(e=>
+    `<option value="${e.id}" ${currentBook===e.id?'selected':''}>${esc(e.name)}</option>`).join('');
   openModal({
     sub:'Transaction',
     title:esc(tx.description||'Transaction'),
@@ -15892,8 +16007,8 @@ function openReconTx(txId) {
           <select class="field-input" id="rtx-status">${statusOpts}</select>
         </div>
         <div>
-          <label class="field-label">Match to event</label>
-          <select class="field-input" id="rtx-event">${eventOpts}</select>
+          <label class="field-label">Book</label>
+          <select class="field-input" id="rtx-book">${bookOpts}</select>
         </div>
       </div>
       <div class="form-field">
@@ -15911,7 +16026,10 @@ function openReconTx(txId) {
       {label:'Save',className:'btn btn-primary',onClick:()=>{
         tx.description=document.getElementById('rtx-desc').value.trim()||tx.description;
         tx.matchStatus=document.getElementById('rtx-status').value;
-        tx.matchedEventId=document.getElementById('rtx-event').value||null;
+        const bookVal=document.getElementById('rtx-book').value||'corporate';
+        tx.book=bookVal;
+        // Keep matchedEventId in sync: event book -> that event; corporate -> null
+        tx.matchedEventId = (bookVal==='corporate') ? null : bookVal;
         tx.notes=document.getElementById('rtx-notes').value.trim();
         const newCat=document.getElementById('rtx-category').value||'';
         const catChanged = newCat!==(tx.category||'');
@@ -16295,7 +16413,7 @@ function importCsvRows(rows, { dateIdx, descIdx, amtIdx, creditIdx, debitIdx, am
       id: uid(), accountId: null, date: isoDate,
       description: desc, rawDescription: desc,
       amount, matchStatus: 'unmatched',
-      matchedEventId: null, notes: '',
+      matchedEventId: null, book: 'corporate', notes: '',
       sourceFile: filename,
       importedAt: new Date().toISOString()
     });
@@ -16472,7 +16590,7 @@ async function runStripeSync() {
           description: charge.description || charge.billing_details?.name || 'Stripe charge',
           rawDescription: charge.description || '',
           amount: charge.amount / 100,
-          matchStatus: 'unmatched', matchedEventId: null, notes: '',
+          matchStatus: 'unmatched', matchedEventId: null, book: 'corporate', notes: '',
           stripeType: 'charge', currency: charge.currency?.toUpperCase() || 'USD',
           importedAt: new Date().toISOString()
         });
@@ -16493,7 +16611,7 @@ async function runStripeSync() {
           description: payout.description || `Stripe payout`,
           rawDescription: payout.description || '',
           amount: payout.amount / 100,
-          matchStatus: 'unmatched', matchedEventId: null, notes: '',
+          matchStatus: 'unmatched', matchedEventId: null, book: 'corporate', notes: '',
           stripeType: 'payout', currency: payout.currency?.toUpperCase() || 'USD',
           importedAt: new Date().toISOString()
         });
@@ -16514,7 +16632,7 @@ async function runStripeSync() {
           description: `Refund — ${refund.reason || 'no reason'}`,
           rawDescription: '',
           amount: -(refund.amount / 100),
-          matchStatus: 'unmatched', matchedEventId: null, notes: '',
+          matchStatus: 'unmatched', matchedEventId: null, book: 'corporate', notes: '',
           stripeType: 'refund', currency: refund.currency?.toUpperCase() || 'USD',
           importedAt: new Date().toISOString()
         });
