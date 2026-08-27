@@ -6230,10 +6230,20 @@ function sharedTemplates() { return (state.shared || defaultShared()).templates 
 function sharedVendors()   { return (state.shared || defaultShared()).vendors   || []; }
 
 function switchBusiness(bizId) {
+  if (state.activeBusiness === bizId) {   // already active — just close the menu
+    const dd0 = document.getElementById('biz-dropdown');
+    if (dd0) dd0.style.display = 'none';
+    return;
+  }
   state.activeBusiness = bizId;
   save();
   updateBusinessToggle();
-  showView('dashboard');
+  // Keep the dropdown's checkmark in sync, then close it
+  if (typeof renderBizDropdown === 'function') renderBizDropdown();
+  const dd = document.getElementById('biz-dropdown');
+  if (dd) dd.style.display = 'none';
+  // Re-render whatever view is currently showing (not always dashboard)
+  showView(currentView && currentView !== 'master' ? currentView : 'dashboard');
 }
 
 function updateBusinessToggle() {
@@ -18200,7 +18210,7 @@ function renderBizDropdown() {
   const businesses = state.businesses || [];
   dd.innerHTML = businesses.map(b => `
     <button class="biz-drop-item ${b.id === state.activeBusiness ? 'active' : ''}"
-      onclick="event.stopPropagation();switchBusiness('${b.id}');document.getElementById('biz-dropdown').style.display='none';">
+      onclick="event.stopPropagation();switchBusiness('${b.id}');">
       <span class="biz-dot" style="background:${b.color};"></span>
       <span style="flex:1;">${esc(b.name)}</span>
       <span class="check">✓</span>
