@@ -6251,6 +6251,21 @@ function switchBusiness(bizId) {
   requestAnimationFrame(() => showView(v));
 }
 
+/* Enter a business workspace from the master/all-businesses screen.
+   Always navigates to that business's dashboard, even if it's already active. */
+function enterWorkspace(bizId) {
+  const dd = document.getElementById('biz-dropdown');
+  if (dd) dd.style.display = 'none';
+  if (state.activeBusiness !== bizId) {
+    state.activeBusiness = bizId;
+    save();
+    updateBusinessToggle();
+    if (typeof renderBizDropdown === 'function') renderBizDropdown();
+  }
+  currentView = null;
+  requestAnimationFrame(() => showView('dashboard'));
+}
+
 function updateBusinessToggle() {
   const b = activeBiz();
   const btn = document.getElementById('biz-toggle-btn');
@@ -18300,7 +18315,7 @@ function renderMasterView() {
           <div style="font-size:12px;">
             ${unmatched>0?`<span style="color:var(--expense);font-weight:600;">${unmatched} unmatched tx</span>`:`<span style="color:var(--revenue);">All reconciled</span>`}
           </div>
-          <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();switchBusiness('${b.id}')">Enter workspace →</button>
+          <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();enterWorkspace('${b.id}')">Enter workspace →</button>
         </div>
       </div>`;
   }).join('');
