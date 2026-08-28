@@ -6231,24 +6231,18 @@ function sharedVendors()   { return (state.shared || defaultShared()).vendors   
 
 function switchBusiness(bizId) {
   const dd = document.getElementById('biz-dropdown');
-  if (state.activeBusiness === bizId) {   // already active — just close the menu
-    if (dd) dd.style.display = 'none';
-    return;
-  }
+  if (dd) dd.style.display = 'none';
+  if (state.activeBusiness === bizId) return;
   state.activeBusiness = bizId;
   save();
   updateBusinessToggle();
   if (typeof renderBizDropdown === 'function') renderBizDropdown();
-  if (dd) dd.style.display = 'none';
-  // Force a clean re-render of the current view from the new active business.
-  // Determine the view from the active nav button if currentView is stale.
-  let v = currentView;
+  // Determine current view from the active nav button (robust against stale currentView)
+  let v = 'dashboard';
   const activeNav = document.querySelector('.nav-btn.active');
-  if (activeNav && activeNav.dataset.view) v = activeNav.dataset.view;
-  if (!v || v === 'master') v = 'dashboard';
-  // showView in a microtask so DOM/state settle first, guaranteeing the render runs
-  currentView = null;               // clear so showView always re-dispatches
-  requestAnimationFrame(() => showView(v));
+  if (activeNav && activeNav.dataset.view && activeNav.dataset.view !== 'master') v = activeNav.dataset.view;
+  // Render synchronously — do NOT defer, so the view can't be left stale.
+  try { showView(v); } catch (e) { console.error('switchBusiness render failed:', e); showView('dashboard'); }
 }
 
 /* Enter a business workspace from the master/all-businesses screen.
