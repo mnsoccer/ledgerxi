@@ -6,7 +6,7 @@
 <title>Ledger XI — Club Operations Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Familjen+Grotesk:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=DM+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <!-- PDF text extraction (lazy-used for invoice parsing) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
@@ -52,7 +52,7 @@
   /* Typography */
   --font-display: 'Fraunces', Georgia, serif;
   --font-sans: 'Familjen Grotesk', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'DM Mono', ui-monospace, monospace;
 
   /* Rhythm */
   --r-1: 4px; --r-2: 8px; --r-3: 12px; --r-4: 16px;
@@ -3628,7 +3628,7 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
 }
 .rollup-row:last-child { border-bottom:none; }
 .rollup-row:hover { background:var(--accent-soft); }
-.rollup-row-head { background:var(--surface-sunk); font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); font-weight:600; cursor:default; }
+.rollup-row-head { background:var(--surface-sunk); font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); font-weight:500; cursor:default; }
 .rollup-row-head:hover { background:var(--surface-sunk); }
 .rollup-total-row { background:var(--surface-2); font-weight:600; border-top:2px solid var(--line); }
 .rollup-num { text-align:right; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
@@ -3657,7 +3657,7 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
 .pnl-book-head { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; }
 .pnl-book-name { font-weight:600; font-size:14px; }
 .pnl-caret { color:var(--ink-3); font-size:11px; display:inline-block; width:12px; }
-.pnl-book-net { font-family:var(--font-mono); font-variant-numeric:tabular-nums; font-weight:600; }
+.pnl-book-net { font-family:var(--font-mono); font-variant-numeric:tabular-nums; font-weight:500; }
 .pnl-book-meta { padding:0 16px 10px 34px; font-size:11px; color:var(--ink-3); font-family:var(--font-mono); }
 .pnl-book-detail { border-top:1px solid var(--line); padding:8px 16px 12px 34px; background:var(--surface-2); }
 .pnl-detail-line { display:grid; grid-template-columns:1fr auto; gap:12px; padding:5px 0; font-size:12.5px; align-items:center; }
@@ -3771,7 +3771,7 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
 /* ============================================================
    ACCOUNTS MODULE
    ============================================================ */
-.acct-type-badge { display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:10px; font-family:var(--font-mono); font-size:9.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap; }
+.acct-type-badge { display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:10px; font-family:var(--font-mono); font-size:9.5px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap; }
 .acct-card { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); padding:20px 24px; margin-bottom:12px; cursor:pointer; transition:background 80ms; }
 .acct-card:hover { background:var(--accent-soft); }
 .acct-card-head { display:flex; align-items:center; gap:16px; }
@@ -3783,8 +3783,8 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
 .acct-card-stats { display:flex; gap:20px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
 .acct-stat { font-size:12px; }
 .acct-stat-label { color:var(--ink-3); font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px; }
-.acct-stat-value { font-weight:600; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
-.acct-section-title { font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3); font-weight:600; margin:24px 0 12px; }
+.acct-stat-value { font-weight:500; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+.acct-section-title { font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3); font-weight:500; margin:24px 0 12px; }
 .acct-empty { padding:48px 24px; text-align:center; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); }
 
 /* ============================================================
@@ -3793,14 +3793,14 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
 .recon-row { display:grid; grid-template-columns:110px 2fr 1fr 110px 110px 120px 100px; gap:10px; padding:11px 16px; border:1px solid var(--line); border-top:none; background:var(--surface); align-items:center; font-size:13px; cursor:pointer; transition:background 80ms; }
 .recon-row:hover { background:var(--accent-soft); }
 .recon-row:last-child { border-radius:0 0 var(--radius-lg) var(--radius-lg); }
-.recon-row-head { display:grid; grid-template-columns:110px 2fr 1fr 110px 110px 120px 100px; gap:10px; padding:8px 16px; background:var(--surface-sunk); border:1px solid var(--line); border-radius:var(--radius-lg) var(--radius-lg) 0 0; font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); font-weight:600; align-items:center; }
-.recon-status { display:inline-flex; align-items:center; gap:4px; font-family:var(--font-mono); font-size:9.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:3px 8px; border-radius:10px; white-space:nowrap; }
+.recon-row-head { display:grid; grid-template-columns:110px 2fr 1fr 110px 110px 120px 100px; gap:10px; padding:8px 16px; background:var(--surface-sunk); border:1px solid var(--line); border-radius:var(--radius-lg) var(--radius-lg) 0 0; font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); font-weight:500; align-items:center; }
+.recon-status { display:inline-flex; align-items:center; gap:4px; font-family:var(--font-mono); font-size:9.5px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; padding:3px 8px; border-radius:10px; white-space:nowrap; }
 .recon-status.unmatched { background:rgba(220,38,38,0.1); color:#B91C1C; }
 .recon-status.matched { background:rgba(37,99,235,0.1); color:#1D4ED8; }
 .recon-status.confirmed { background:rgba(16,185,129,0.1); color:#047857; }
 .recon-status.disputed { background:rgba(234,179,8,0.1); color:#92400E; }
-.recon-amount-in { color:var(--revenue); font-weight:600; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
-.recon-amount-out { color:var(--expense); font-weight:600; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+.recon-amount-in { color:var(--revenue); font-weight:500; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+.recon-amount-out { color:var(--expense); font-weight:500; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
 .cat-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:500; padding:3px 9px; border-radius:10px; white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis; line-height:1.4; }
 .cat-badge.cat-auto { border:1px dashed currentColor; opacity:0.85; }
 .cat-revenue { background:rgba(16,185,129,0.1); color:#047857; }
@@ -3820,7 +3820,7 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
 .doc-card-icon { width:40px; height:40px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .doc-card-name { font-weight:600; font-size:13.5px; word-break:break-word; }
 .doc-card-meta { font-size:11.5px; color:var(--ink-3); font-family:var(--font-mono); }
-.doc-type-badge { display:inline-block; padding:2px 7px; border-radius:8px; font-family:var(--font-mono); font-size:9.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; }
+.doc-type-badge { display:inline-block; padding:2px 7px; border-radius:8px; font-family:var(--font-mono); font-size:9.5px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; }
 .doc-type-invoice { background:rgba(37,99,235,0.1); color:#1D4ED8; }
 .doc-type-statement { background:rgba(16,185,129,0.1); color:#047857; }
 .doc-type-receipt { background:rgba(124,58,237,0.1); color:#6D28D9; }
@@ -4574,7 +4574,7 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
         <div class="card" style="margin-bottom:16px; padding:14px 18px;">
           <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
             <div style="flex:1; min-width:240px;">
-              <label style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); font-weight:600; display:block; margin-bottom:5px;">Load from event (optional)</label>
+              <label style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); font-weight:500; display:block; margin-bottom:5px;">Load from event (optional)</label>
               <select class="field-input" id="pc-event-select">
                 <option value="">— Start from scratch —</option>
               </select>
@@ -5639,7 +5639,7 @@ textarea.field-input { min-height: 64px; resize: vertical; font-family: var(--fo
 <div id="onboarding-overlay" style="display:none; position:fixed; inset:0; background:rgba(22,22,15,0.55); z-index:300; align-items:center; justify-content:center;">
   <div style="background:var(--canvas); border-radius:16px; box-shadow:var(--shadow-pop); width:min(560px,calc(100vw - 32px)); max-height:calc(100vh - 48px); overflow-y:auto; border:1px solid var(--line-strong);">
     <div style="padding:32px 36px 0;">
-      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:8px;">Welcome to Ledger XI</div>
+      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); font-weight:500; margin-bottom:8px;">Welcome to Ledger XI</div>
       <h2 style="font-family:var(--font-display); font-weight:300; font-size:28px; letter-spacing:-0.02em; margin:0 0 8px;">Let's get you set up</h2>
       <p style="font-size:13.5px; color:var(--ink-2); margin:0 0 28px; line-height:1.6;">Takes about 2 minutes. You can skip any step and come back later.</p>
     </div>
@@ -6519,15 +6519,15 @@ function renderDashboard() {
         <p style="color:var(--ink-3); margin:0 0 24px; font-size:14px; line-height:1.6;">Ledger XI tracks your tournaments and leagues — budget vs. what actually came in and went out. Here's how to get started:</p>
         <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:28px;">
           <div style="display:flex; gap:14px; align-items:flex-start;">
-            <div style="width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--canvas); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:600; flex-shrink:0; margin-top:1px;">1</div>
+            <div style="width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--canvas); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:500; flex-shrink:0; margin-top:1px;">1</div>
             <div><strong>Create an event</strong> — give it a name, date, and type (tournament or league)</div>
           </div>
           <div style="display:flex; gap:14px; align-items:flex-start;">
-            <div style="width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--canvas); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:600; flex-shrink:0; margin-top:1px;">2</div>
+            <div style="width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--canvas); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:500; flex-shrink:0; margin-top:1px;">2</div>
             <div><strong>Add revenue lines</strong> — team fees, sponsorships, registration income</div>
           </div>
           <div style="display:flex; gap:14px; align-items:flex-start;">
-            <div style="width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--canvas); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:600; flex-shrink:0; margin-top:1px;">3</div>
+            <div style="width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--canvas); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:11px; font-weight:500; flex-shrink:0; margin-top:1px;">3</div>
             <div><strong>Add expense lines</strong> — fields, refs, insurance, supplies</div>
           </div>
         </div>
@@ -7970,7 +7970,7 @@ function renderEntitiesList() {
     const data = state.businessData?.[b.id] || {};
     const evCount = (data.events || []).filter(ev => (ev.status||'active') === 'active').length;
     const isActive = b.id === state.activeBusiness;
-    const activeTag = isActive ? '<span style="font-size:10px; color:var(--accent); font-weight:600; padding:2px 6px; border:1px solid var(--accent); border-radius:8px; letter-spacing:0.04em; text-transform:uppercase; font-family:var(--font-mono);">ACTIVE</span>' : '';
+    const activeTag = isActive ? '<span style="font-size:10px; color:var(--accent); font-weight:500; padding:2px 6px; border:1px solid var(--accent); border-radius:8px; letter-spacing:0.04em; text-transform:uppercase; font-family:var(--font-mono);">ACTIVE</span>' : '';
     return '<div class="entity-card" data-biz-id="' + b.id + '">' +
       '<div class="entity-card-swatch" style="background:' + (b.color || '#555') + ';">' + esc(b.shortName || '?') + '</div>' +
       '<div class="entity-card-info">' +
@@ -8064,7 +8064,7 @@ function renderSigningEntitiesList() {
       ${entities.map(e => `
         <div class="agr-tpl-row" data-id="${e.id}">
           <div style="flex:1; min-width:0;">
-            <div class="agr-name">${esc(e.name)}${e.isDefault ? ' <span style="font-size:10px; color:var(--accent); font-weight:600; margin-left:6px; padding:2px 6px; border:1px solid var(--accent); border-radius:8px; letter-spacing:0.04em; text-transform:uppercase; font-family:var(--font-mono);">DEFAULT</span>' : ''}</div>
+            <div class="agr-name">${esc(e.name)}${e.isDefault ? ' <span style="font-size:10px; color:var(--accent); font-weight:500; margin-left:6px; padding:2px 6px; border:1px solid var(--accent); border-radius:8px; letter-spacing:0.04em; text-transform:uppercase; font-family:var(--font-mono);">DEFAULT</span>' : ''}</div>
             <div class="agr-preview">${esc([e.signatoryName, e.signatoryTitle, (e.address || '').replace(/\n/g,' · ')].filter(Boolean).join(' — '))}</div>
           </div>
           <div class="po-chev">›</div>
@@ -11794,7 +11794,7 @@ function renderPOEditor() {
       </div>
 
       <div style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:baseline;">
-        <div class="sub" style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3); font-weight:600;">Line items</div>
+        <div class="sub" style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3); font-weight:500;">Line items</div>
         <button class="btn btn-ghost btn-sm" id="poe-add-line" ${isLocked?'disabled':''}>+ Add line</button>
       </div>
 
@@ -11842,7 +11842,7 @@ function renderPOEditor() {
           <span>Include default Standard PO Terms</span>
           <a href="#" id="poe-edit-default" style="margin-left:6px; color:var(--accent); font-size:11.5px; text-decoration:underline;">edit default</a>
         </label>
-        <label style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); font-weight:600; display:block; margin-bottom:5px;">Additional / custom terms (this PO only)</label>
+        <label style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); font-weight:500; display:block; margin-bottom:5px;">Additional / custom terms (this PO only)</label>
         <textarea id="poe-custom-terms" rows="4" placeholder="Optional — anything specific to this vendor or order. Appended below the default terms on the printable PO." ${isLocked?'disabled':''} style="width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:5px; font-size:13px; font-family:var(--font-sans); background:var(--surface);">${esc(po.customTerms || '')}</textarea>
       </div>
 
@@ -12121,7 +12121,7 @@ function renderPOPrint() {
           ` : ''}
           ${(po.customTerms || '').trim() ? `
             <div style="margin-top:14px; padding-top:14px; border-top:1px solid #DDD;">
-              <div style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:#666; font-weight:600; margin-bottom:8px;">Additional terms specific to this order</div>
+              <div style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:#666; font-weight:500; margin-bottom:8px;">Additional terms specific to this order</div>
               <div style="font-size:11.5px; color:#333; line-height:1.6; white-space:pre-wrap;">${esc(po.customTerms)}</div>
             </div>
           ` : ''}
@@ -13202,7 +13202,7 @@ function renderPaymentScheduleBlock(p, isLocked, total) {
       </div>
       ${payments.length === 0 ? '<div style="font-size:12.5px; color:var(--ink-4); padding:6px 0;">No payment schedule yet. Use the buttons below to add installments.</div>' : `
       <div style="border:1px solid var(--line); border-radius:6px; overflow:hidden;">
-        <div style="display:grid; grid-template-columns:minmax(140px, 1.5fr) 130px 130px 110px 110px 32px; gap:8px; padding:8px 12px; background:var(--surface-2); font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); font-weight:600; border-bottom:1px solid var(--line);">
+        <div style="display:grid; grid-template-columns:minmax(140px, 1.5fr) 130px 130px 110px 110px 32px; gap:8px; padding:8px 12px; background:var(--surface-2); font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); font-weight:500; border-bottom:1px solid var(--line);">
           <span>Label</span><span>Invoice date</span><span>Due date</span><span style="text-align:right;">Amount</span><span style="text-align:center;">Status</span><span></span>
         </div>
         ${payments.map(pay => `
@@ -13405,7 +13405,7 @@ function renderProposalEditor() {
           You haven't added any saved agreement templates yet. <a href="#" id="pp-tpl-link" style="color:var(--accent); text-decoration:underline;">Create one in Settings</a> to add reusable clauses (cancellation policy, brand-usage rights, payment terms, etc.).
         </div>
       `}
-      <label style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); font-weight:600; display:block; margin-bottom:5px;">Custom terms (specific to this proposal)</label>
+      <label style="font-family:var(--font-mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-3); font-weight:500; display:block; margin-bottom:5px;">Custom terms (specific to this proposal)</label>
       <textarea id="pp-custom-terms" rows="4" placeholder="Anything specific to this deal — payment milestones, deliverable timing, exclusivity, etc." ${isLocked?'disabled':''} style="width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:5px; font-size:13px; font-family:var(--font-sans); background:var(--surface);">${esc(p.customTerms || '')}</textarea>
     </div>
   `;
@@ -13963,7 +13963,7 @@ function renderProposalPrint() {
   // Payment schedule table
   const paymentsBlock = payments.length > 0 ? `
     <div class="pp-print-section" style="page-break-inside:avoid;">
-      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#666; font-weight:600; margin-bottom:6px;">Payment Schedule</div>
+      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#666; font-weight:500; margin-bottom:6px;">Payment Schedule</div>
       <table class="pp-print-lines">
         <thead>
           <tr><th>${payments.length > 1 ? 'Installment' : 'Payment'}</th><th>Invoice Date</th><th>Due Date</th><th>Amount</th></tr>
@@ -13985,7 +13985,7 @@ function renderProposalPrint() {
   // In-kind obligations (sponsor-side)
   const inKindBlock = inKind.length > 0 ? `
     <div class="pp-print-section" style="page-break-inside:avoid;">
-      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#666; font-weight:600; margin-bottom:8px;">Sponsor In-Kind Obligations</div>
+      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#666; font-weight:500; margin-bottom:8px;">Sponsor In-Kind Obligations</div>
       <ul style="font-size:13px; color:#333; line-height:1.6; padding-left:22px; margin:0;">
         ${inKind.map(ik => `<li>${esc(ik.description || '')}${ik.estimatedValue ? ` <em style="color:#666;">(est. ${esc(ik.estimatedValue)})</em>` : ''}</li>`).join('')}
       </ul>
@@ -13996,7 +13996,7 @@ function renderProposalPrint() {
   const sponsorOwed = (p.deliverables || []).filter(d => d.owedBy === 'sponsor');
   const sponsorMaterialsBlock = (isAgreement && sponsorOwed.length > 0) ? `
     <div class="pp-print-section" style="page-break-inside:avoid;">
-      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#666; font-weight:600; margin-bottom:8px;">Sponsor Materials to Provide</div>
+      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#666; font-weight:500; margin-bottom:8px;">Sponsor Materials to Provide</div>
       <ul style="font-size:13px; color:#333; line-height:1.6; padding-left:22px; margin:0;">
         ${sponsorOwed.map(d => `<li>${esc(d.description)}</li>`).join('')}
       </ul>
@@ -15546,7 +15546,7 @@ function renderAccountsView() {
                 </div>
               </div>
               <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
-                ${unmatched > 0 ? `<span style="background:rgba(220,38,38,0.1);color:#B91C1C;font-family:var(--font-mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:10px;">${unmatched} unmatched</span>` : ''}
+                ${unmatched > 0 ? `<span style="background:rgba(220,38,38,0.1);color:#B91C1C;font-family:var(--font-mono);font-size:10px;font-weight:500;padding:3px 8px;border-radius:10px;">${unmatched} unmatched</span>` : ''}
                 <div class="po-chev">›</div>
               </div>
             </div>
@@ -16018,7 +16018,7 @@ function openReconTx(txId) {
     body:`
       <div style="background:var(--surface-2);padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div><div style="font-size:10px;color:var(--ink-3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Date</div>${fmtDate(tx.date)}</div>
-        <div><div style="font-size:10px;color:var(--ink-3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Amount</div><span style="font-weight:600;color:${tx.amount>=0?'var(--revenue)':'var(--expense)'};">${fmt(tx.amount)}</span></div>
+        <div><div style="font-size:10px;color:var(--ink-3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Amount</div><span style="font-weight:500;color:${tx.amount>=0?'var(--revenue)':'var(--expense)'};">${fmt(tx.amount)}</span></div>
         <div><div style="font-size:10px;color:var(--ink-3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Account</div>${acct?esc(acct.name):'—'}</div>
         <div><div style="font-size:10px;color:var(--ink-3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Type</div>${tx.amount>=0?'Credit / Deposit':'Debit / Payment'}</div>
       </div>
@@ -16747,8 +16747,8 @@ function renderDocumentsView(){
         const ev = d.eventId ? (biz().events||[]).find(e=>e.id===d.eventId) : null;
         const invBadge = d.docType==='invoice' ? (
           d.invoiceApplied
-            ? `<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.06em;text-transform:uppercase;background:rgba(16,185,129,0.12);color:#047857;padding:2px 7px;border-radius:8px;font-weight:600;">✓ Applied</span>`
-            : `<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.06em;text-transform:uppercase;background:rgba(234,179,8,0.12);color:#92400E;padding:2px 7px;border-radius:8px;font-weight:600;">Needs review</span>`
+            ? `<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.06em;text-transform:uppercase;background:rgba(16,185,129,0.12);color:#047857;padding:2px 7px;border-radius:8px;font-weight:500;">✓ Applied</span>`
+            : `<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.06em;text-transform:uppercase;background:rgba(234,179,8,0.12);color:#92400E;padding:2px 7px;border-radius:8px;font-weight:500;">Needs review</span>`
         ) : '';
         return`<div class="doc-card" onclick="openDocViewer('${d.id}')">
           <div style="display:flex;align-items:center;gap:10px;justify-content:space-between;">
@@ -17077,14 +17077,14 @@ function renderInvoiceReviewModal(docId) {
 
       <div style="border-top:1px solid var(--line);padding-top:14px;margin-bottom:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;">Line items</div>
+          <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500;">Line items</div>
           <button class="btn btn-sm" onclick="addInvLineItem('${docId}')">+ Add line</button>
         </div>
         ${lineItemsRows || '<div style="font-size:12px;color:var(--ink-3);font-style:italic;padding:8px 0;">No line items detected. Add them manually or just apply the total to an event.</div>'}
       </div>
 
       <div style="border-top:1px solid var(--line);padding-top:14px;">
-        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:10px;">Apply to event</div>
+        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-bottom:10px;">Apply to event</div>
         <div class="form-field">
           <label class="field-label">Event</label>
           <select class="field-input" id="inv-event">
@@ -17201,7 +17201,7 @@ function openInvoiceApplyModal(docId) {
     <div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
         <div style="font-weight:600;font-size:13px;">${esc(li.description)}</div>
-        <div style="font-family:var(--font-mono);font-weight:600;">${fmt(li.amount)}</div>
+        <div style="font-family:var(--font-mono);font-weight:500;">${fmt(li.amount)}</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
         <select class="field-input inv-apply-mode" data-i="${i}" style="font-size:12px;" onchange="toggleInvApplyTarget(${i})">
@@ -17498,7 +17498,7 @@ function renderEqKits() {
           <div style="font-size:11px;color:var(--ink-3);font-family:var(--font-mono);margin-top:2px;">${entity?esc(entity.shortName||entity.name)+' · ':''} ${kit.jerseySize||''}${kit.shortSize&&kit.shortSize!==kit.jerseySize?' / Shorts '+kit.shortSize:''}</div>
         </div>
         <div>${kitTypeBadge(kit.kitType)}</div>
-        <div style="font-family:var(--font-mono);font-weight:600;">${kit.jerseyNumber||'—'}</div>
+        <div style="font-family:var(--font-mono);font-weight:500;">${kit.jerseyNumber||'—'}</div>
         <div style="font-family:var(--font-mono);">${kit.jerseySize||'—'}</div>
         <div><span class="eq-cat-badge" style="background:var(--surface-2);color:var(--ink-2);">${kit.condition||'good'}</span></div>
         <div style="font-size:13px;">${kit.playerName?esc(kit.playerName):'<span style="color:var(--ink-3);">Unassigned</span>'}</div>
@@ -17538,7 +17538,7 @@ function renderEqAssignments() {
         <div style="font-size:13px;">${fmtDate(a.checkedOutAt?.slice(0,10))}</div>
         <div class="${overdue?'assign-overdue':''}">${a.expectedReturnDate?fmtDate(a.expectedReturnDate):'—'}${overdue?' ⚠':''}
         </div>
-        <div style="font-family:var(--font-mono);font-weight:600;">${a.quantity||1}</div>
+        <div style="font-family:var(--font-mono);font-weight:500;">${a.quantity||1}</div>
         <div style="font-size:12px;color:var(--ink-2);">${a.conditionOut||'—'}</div>
         <div>
           <button class="btn btn-sm" onclick="event.stopPropagation();openEqCheckIn('${a.id}')">Check in</button>
@@ -17724,7 +17724,7 @@ function openEqKitEditor(kitId) {
       </div>
 
       <div style="border-top:1px solid var(--line); padding-top:14px; margin-bottom:14px;">
-        <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin-bottom:12px; font-weight:600;">Player assignment</div>
+        <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin-bottom:12px; font-weight:500;">Player assignment</div>
         <div class="po-meta-grid two" style="margin-bottom:10px;">
           <div>
             <label class="field-label">Player name</label>
@@ -17747,7 +17747,7 @@ function openEqKitEditor(kitId) {
       </div>
 
       <div style="border-top:1px solid var(--line); padding-top:14px; margin-bottom:14px;">
-        <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin-bottom:12px; font-weight:600;">Deposit</div>
+        <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin-bottom:12px; font-weight:500;">Deposit</div>
         <div class="po-meta-grid two">
           <div>
             <label class="checkbox-row" style="margin-bottom:10px;">
@@ -18297,7 +18297,7 @@ function renderMasterView() {
             <div class="master-biz-name">${esc(b.name)}</div>
             <div class="master-biz-meta">${events.length} event${events.length!==1?'s':''} · ${accounts.length} account${accounts.length!==1?'s':''}</div>
           </div>
-          ${isActive?`<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:8px;font-weight:600;border:1px solid var(--accent);">Active</span>`:''}
+          ${isActive?`<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:8px;font-weight:500;border:1px solid var(--accent);">Active</span>`:''}
         </div>
         <div class="master-biz-kpis">
           <div><div class="master-biz-kpi-label">Revenue</div><div class="master-biz-kpi-value" style="color:var(--revenue);">${fmt(bRev)}</div></div>
@@ -18435,7 +18435,7 @@ function showMigrationPromptIfNeeded() {
   Object.entries(groups).forEach(([typeLabel, recs]) => {
     tableRows += `
       <tr>
-        <td colspan="3" style="background:var(--surface-sunk);padding:8px 14px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--line);">
+        <td colspan="3" style="background:var(--surface-sunk);padding:8px 14px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500;border-bottom:1px solid var(--line);">
           ${typeLabel}s (${recs.length})
           <button onclick="assignAllType('${typeLabel}')" style="float:right;font-family:var(--font-sans);font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;font-weight:500;">Assign all →</button>
         </td>
@@ -18463,7 +18463,7 @@ function showMigrationPromptIfNeeded() {
   overlay.innerHTML = `
     <div style="background:var(--canvas);border-radius:16px;border:1px solid var(--line-strong);box-shadow:var(--shadow-pop);width:min(680px,100%);max-height:calc(100vh - 64px);display:flex;flex-direction:column;">
       <div style="padding:28px 32px 20px;border-bottom:1px solid var(--line);flex-shrink:0;">
-        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;">One-time setup</div>
+        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:500;margin-bottom:6px;">One-time setup</div>
         <h2 style="font-family:var(--font-display);font-weight:300;font-size:26px;letter-spacing:-0.02em;margin:0 0 8px;">Assign records to businesses</h2>
         <p style="font-size:13.5px;color:var(--ink-2);margin:0 0 12px;">You have records from both organizations. Assign each to the right business. Use "Assign all →" to set an entire category at once.</p>
         <div style="display:flex;align-items:center;gap:4px;">${bizDots}</div>
