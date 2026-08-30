@@ -16711,7 +16711,7 @@ function renderDocumentsView(){
   if(entSel){
     const prev=entSel.value;
     entSel.innerHTML='<option value="all">All entities</option>'+
-      (biz().entities||[]).map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+      (state.businesses||[]).map(b=>`<option value="${b.id}">${esc(b.shortName||b.name)}</option>`).join('');
     entSel.value=prev;
   }
   const entFilter=entSel?.value||'all';
@@ -16845,8 +16845,7 @@ function openDocEditor(docId){
         <div>
           <label class="field-label">Entity</label>
           <select class="field-input" id="de-entity">
-            <option value="">— Unassigned —</option>
-            ${(biz().entities||[]).map(e=>`<option value="${e.id}" ${d.entityId===e.id?'selected':''}>${esc(e.name)}</option>`).join('')}
+            ${(state.businesses||[]).map(b=>`<option value="${b.id}" ${(d.entityId||state.activeBusiness)===b.id?'selected':''}>${esc(b.name)}</option>`).join('')}
           </select>
         </div>
       </div>
